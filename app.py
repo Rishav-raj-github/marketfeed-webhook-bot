@@ -4,6 +4,8 @@ from flask import Flask, request, jsonify
 import requests
 from binance.spot import Spot
 from dotenv import load_dotenv
+import re7
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -180,7 +182,11 @@ def place_binance_order(symbol, side, quantity):
         }
 
 # ============ MAIN WEBHOOK ROUTE ============
-@app.route('/webhook', methods=['POST'])
+182
+260
+1
+2
+, methods=['POST'])
 def webhook():
     """
     TradingView webhook handler
