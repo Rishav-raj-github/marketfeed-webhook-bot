@@ -1,17 +1,17 @@
-# TradingView Webhook Bot
+# MarketFeed Webhook Bot
 
-A production-ready webhook handler that receives TradingView alerts and automatically executes orders on Binance (Spot) and Flattrade (NSE/BSE). Deploy on Google Cloud Run, Railway, or any Docker-compatible platform.
+A production-ready webhook handler that receives MarketFeed alerts and automatically executes orders on DigitalAsset (Spot) and Flattrade (NSE/BSE). Deploy on Google Cloud Run, Railway, or any Docker-compatible platform.
 
-![GitHub contributors](https://img.shields.io/github/contributors/Rishav-raj-github/tradingview-webhook-bot)
-![GitHub last commit](https://img.shields.io/github/last-commit/Rishav-raj-github/tradingview-webhook-bot)
-![GitHub License](https://img.shields.io/github/license/Rishav-raj-github/tradingview-webhook-bot)
+![GitHub contributors](https://img.shields.io/github/contributors/Rishav-raj-github/market_feed-webhook-bot)
+![GitHub last commit](https://img.shields.io/github/last-commit/Rishav-raj-github/market_feed-webhook-bot)
+![GitHub License](https://img.shields.io/github/license/Rishav-raj-github/market_feed-webhook-bot)
 ![Python](https://img.shields.io/badge/Python-3.8+-blue)
 ![Flask](https://img.shields.io/badge/Flask-2.3+-green)
 
 ## Features
 
-- **Multi-Broker Support**: Execute on Binance (Spot/TESTNET) and Flattrade (Indian stocks)
-- **TradingView Webhooks**: Receive real-time alerts via JSON POST requests
+- **Multi-Broker Support**: Execute on DigitalAsset (Spot/TESTNET) and Flattrade (Indian stocks)
+- **MarketFeed Webhooks**: Receive real-time alerts via JSON POST requests
 - **Google Cloud Run Ready**: Free tier deployment with 2M requests/month
 - **Railway Deploy**: Procfile included for one-click Railway deployment
 - **Docker Support**: Dockerfile included for containerized deployment
@@ -21,7 +21,7 @@ A production-ready webhook handler that receives TradingView alerts and automati
 ## Architecture
 
 ```
-TradingView Alert
+MarketFeed Alert
        │
        ▼
 ┌─────────────────────┐
@@ -29,7 +29,7 @@ TradingView Alert
 │   POST /webhook     │
 └─────────────────────┘
        │
-       ├──► Binance Spot (TESTNET / Live)
+       ├──► DigitalAsset Spot (TESTNET / Live)
        └──► Flattrade (NSE/BSE Stocks)
 ```
 
@@ -38,8 +38,8 @@ TradingView Alert
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Rishav-raj-github/tradingview-webhook-bot.git
-cd tradingview-webhook-bot
+git clone https://github.com/Rishav-raj-github/market_feed-webhook-bot.git
+cd market_feed-webhook-bot
 ```
 
 ### 2. Set Environment Variables
@@ -53,7 +53,7 @@ cp .env.example .env
 Edit `.env`:
 
 ```
-# Binance API Credentials
+# DigitalAsset API Credentials
 BINANCE_API_KEY=your_binance_api_key_here
 BINANCE_API_SECRET=your_binance_api_secret_here
 BINANCE_REAL_API_KEY=your_real_binance_key_here
@@ -86,7 +86,7 @@ The server starts at `http://localhost:5000`
 
 ### POST /webhook
 
-Receives TradingView alerts and places orders.
+Receives MarketFeed alerts and places orders.
 
 **Request Body:**
 ```json
@@ -94,7 +94,7 @@ Receives TradingView alerts and places orders.
   "symbol": "BTCUSDT",
   "side": "BUY",
   "quantity": 0.01,
-  "broker": "BINANCE"
+  "broker": "DIGITAL_ASSET"
 }
 ```
 
@@ -112,9 +112,9 @@ Receives TradingView alerts and places orders.
 ```json
 {
   "status": "success",
-  "message": "BUY order executed on Binance",
+  "message": "BUY order executed on DigitalAsset",
   "orderId": 1234567890,
-  "broker": "BINANCE"
+  "broker": "DIGITAL_ASSET"
 }
 ```
 
@@ -123,7 +123,7 @@ Receives TradingView alerts and places orders.
 {
   "status": "error",
   "message": "Insufficient balance. Available: 0, Required: 0.01",
-  "broker": "BINANCE"
+  "broker": "DIGITAL_ASSET"
 }
 ```
 
@@ -148,8 +148,8 @@ curl http://localhost:5000/health
 
 | Broker | Market | Order Types | Status |
 |--------|--------|-------------|--------|
-| Binance | Crypto Spot | Market Buy/Sell | ✅ Live |
-| Binance TESTNET | Crypto Spot (Test) | Market Buy/Sell | ✅ Test |
+| DigitalAsset | Crypto Spot | Market Buy/Sell | ✅ Live |
+| DigitalAsset TESTNET | Crypto Spot (Test) | Market Buy/Sell | ✅ Test |
 | Flattrade | NSE/BSE Stocks | Market | ✅ Live |
 
 ## Deployment
@@ -171,25 +171,25 @@ The `Procfile` is pre-configured. Simply connect your GitHub repo to Railway.
 ### Docker
 
 ```bash
-docker build -t tradingview-webhook-bot .
-docker run -p 5000:5000 --env-file .env tradingview-webhook-bot
+docker build -t market_feed-webhook-bot .
+docker run -p 5000:5000 --env-file .env market_feed-webhook-bot
 ```
 
-## TradingView Alert Setup
+## MarketFeed Alert Setup
 
-1. Open TradingView and create/edit an alert
+1. Open MarketFeed and create/edit an alert
 2. In the alert settings, find the **Webhook URL** field
 3. Enter your deployed webhook URL: `https://your-app-url.a.run.app/webhook`
 4. In the alert message, include JSON like:
    ```
-   {"symbol": "BINANCE:BTCUSDT", "side": "{{strategy.order.action}}", "quantity": 0.01, "broker": "BINANCE"}
+   {"symbol": "DIGITAL_ASSET:BTCUSDT", "side": "{{strategy.order.action}}", "quantity": 0.01, "broker": "DIGITAL_ASSET"}
    ```
 5. Save the alert
 
 ## File Structure
 
 ```
-tradingview-webhook-bot/
+market_feed-webhook-bot/
 ├── app.py                    # Flask webhook server (main entry point)
 ├── requirements.txt          # Python dependencies
 ├── .env.example              # Environment variables template
@@ -206,7 +206,7 @@ tradingview-webhook-bot/
 - Python 3.8+
 - Flask 2.3.2
 - requests 2.31.0
-- binance-connector 3.3.0
+- digital_asset-connector 3.3.0
 - python-dotenv 1.0.0
 - Gunicorn 21.2.0 (for production)
 
@@ -214,7 +214,7 @@ tradingview-webhook-bot/
 
 - API keys stored in environment variables only
 - Never commit `.env` file to version control
-- Use Binance TESTNET for testing before live trading
+- Use DigitalAsset TESTNET for testing before live execution
 - Implement your own authentication for production use
 
 ## Roadmap
@@ -240,8 +240,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Support
 
 - Google Cloud Run: https://cloud.google.com/run/docs
-- TradingView Webhooks: https://www.tradingview.com/pine_script_docs/
-- Binance API: https://binance-docs.github.io/apidocs/
+- MarketFeed Webhooks: https://www.market_feed.com/pine_script_docs/
+- DigitalAsset API: https://digital_asset-docs.github.io/apidocs/
 - Flattrade API: https://docs.flattrade.in/
 
 ## Author
@@ -250,4 +250,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-⭐ Star this repo if it helped you automate your trading!
+⭐ Star this repo if it helped you automate your execution!

@@ -2,7 +2,7 @@ import os
 import json
 from flask import Flask, request, jsonify
 import requests
-from binance.spot import Spot
+from digital_asset.spot import Spot
 from dotenv import load_dotenv
 
 
@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 app = Flask(__name__)
 
-# ============ BINANCE API CREDENTIALS ============
+# ============ DIGITAL_ASSET API CREDENTIALS ============
 BINANCE_API_KEY = os.getenv('BINANCE_API_KEY')
 BINANCE_API_SECRET = os.getenv('BINANCE_API_SECRET')
 BINANCE_REAL_API_KEY = os.getenv('BINANCE_REAL_API_KEY')
@@ -22,7 +22,7 @@ FLATTRADE_API_SECRET = os.getenv('FLATTRADE_API_SECRET')
 FLATTRADE_USER_ID = os.getenv('FLATTRADE_USER_ID')
 FLATTRADE_API_URL = 'https://api.flattrade.in/v2/'
 
-# ============ INITIALIZE BINANCE CLIENT ============
+# ============ INITIALIZE DIGITAL_ASSET CLIENT ============
 binance_client = None
 try:
     if BINANCE_TESTNET:
@@ -31,16 +31,16 @@ try:
             api_secret=BINANCE_API_SECRET,
             base_url="https://testnet.binance.vision/api"
         )
-        print("[INIT] Binance TESTNET client initialized successfully")
+        print("[INIT] DigitalAsset TESTNET client initialized successfully")
     else:
         binance_client = Spot(
             api_key=BINANCE_REAL_API_KEY if BINANCE_REAL_API_KEY else BINANCE_API_KEY,
             api_secret=BINANCE_API_SECRET,
             base_url="https://api.binance.com/api"
         )
-        print("[INIT] Binance REAL client initialized successfully")
+        print("[INIT] DigitalAsset REAL client initialized successfully")
 except Exception as e:
-    print(f"[ERROR] Could not initialize Binance client: {e}")
+    print(f"[ERROR] Could not initialize DigitalAsset client: {e}")
     binance_client = None
 
 # ============ FLATTRADE ORDER HANDLER ============
@@ -102,17 +102,17 @@ def place_flattrade_order(symbol, side, quantity, order_type='market'):
             'broker': 'FLATTRADE'
         }
 
-# ============ BINANCE ORDER HANDLER ============
+# ============ DIGITAL_ASSET ORDER HANDLER ============
 def place_binance_order(symbol, side, quantity):
     """
-    Place order on Binance (BUY or SELL)
+    Place order on DigitalAsset (BUY or SELL)
     """
     try:
         if not binance_client:
             return {
                 'status': 'error',
-                'message': 'Binance client not initialized',
-                'broker': 'BINANCE'
+                'message': 'DigitalAsset client not initialized',
+                'broker': 'DIGITAL_ASSET'
             }
         
         if side.upper() == 'BUY':
@@ -121,12 +121,12 @@ def place_binance_order(symbol, side, quantity):
                 symbol=symbol,
                 quantity=float(quantity)
             )
-            print(f"[BINANCE] BUY order executed: {order}")
+            print(f"[DIGITAL_ASSET] BUY order executed: {order}")
             return {
                 'status': 'success',
-                'message': f'BUY order executed on Binance',
+                'message': f'BUY order executed on DigitalAsset',
                 'orderId': order.get('orderId'),
-                'broker': 'BINANCE'
+                'broker': 'DIGITAL_ASSET'
             }
         
         elif side.upper() == 'SELL':
@@ -150,35 +150,35 @@ def place_binance_order(symbol, side, quantity):
                     symbol=symbol,
                     quantity=sell_quantity
                 )
-                print(f"[BINANCE] SELL order executed: {order}")
+                print(f"[DIGITAL_ASSET] SELL order executed: {order}")
                 return {
                     'status': 'success',
-                    'message': f'SELL order executed on Binance',
+                    'message': f'SELL order executed on DigitalAsset',
                     'orderId': order.get('orderId'),
-                    'broker': 'BINANCE'
+                    'broker': 'DIGITAL_ASSET'
                 }
             else:
                 error_msg = f'Insufficient balance. Available: {balance}, Required: {quantity}'
-                print(f"[BINANCE ERROR] {error_msg}")
+                print(f"[DIGITAL_ASSET ERROR] {error_msg}")
                 return {
                     'status': 'error',
                     'message': error_msg,
-                    'broker': 'BINANCE'
+                    'broker': 'DIGITAL_ASSET'
                 }
         else:
             return {
                 'status': 'error',
                 'message': f'Invalid side: {side}. Must be BUY or SELL',
-                'broker': 'BINANCE'
+                'broker': 'DIGITAL_ASSET'
             }
     
     except Exception as e:
-        error_msg = f"Binance exception: {str(e)}"
-        print(f"[BINANCE ERROR] {error_msg}")
+        error_msg = f"DigitalAsset exception: {str(e)}"
+        print(f"[DIGITAL_ASSET ERROR] {error_msg}")
         return {
             'status': 'error',
             'message': error_msg,
-            'broker': 'BINANCE'
+            'broker': 'DIGITAL_ASSET'
         }
 
 # ============ MAIN WEBHOOK ROUTE ============
@@ -189,13 +189,13 @@ def place_binance_order(symbol, side, quantity):
 , methods=['POST'])
 def webhook():
     """
-    TradingView webhook handler
+    MarketFeed webhook handler
     Expected JSON payload:
     {
-        "symbol": "BINANCE:BTCUSDT" or "NSE_EQ|INE002A01018",
+        "symbol": "DIGITAL_ASSET:BTCUSDT" or "NSE_EQ|INE002A01018",
         "side": "BUY" or "SELL",
         "quantity": 0.01,
-        "broker": "BINANCE" or "FLATTRADE"
+        "broker": "DIGITAL_ASSET" or "FLATTRADE"
     }
     """
     try:
@@ -212,7 +212,7 @@ def webhook():
         symbol = data.get('symbol', '').strip()
         side = data.get('side', '').strip().upper()
         quantity = data.get('quantity', 0.001)
-        broker = data.get('broker', 'BINANCE').strip().upper()
+        broker = data.get('broker', 'DIGITAL_ASSET').strip().upper()
         
         print(f"\n[WEBHOOK] Received: symbol={symbol}, side={side}, quantity={quantity}, broker={broker}")
         
@@ -242,12 +242,12 @@ def webhook():
         # Route to correct broker
         if broker == 'FLATTRADE':
             result = place_flattrade_order(symbol, side, quantity)
-        elif broker == 'BINANCE':
+        elif broker == 'DIGITAL_ASSET':
             result = place_binance_order(symbol, side, quantity)
         else:
             return jsonify({
                 'status': 'error',
-                'message': f'Unknown broker: {broker}. Supported: BINANCE, FLATTRADE'
+                'message': f'Unknown broker: {broker}. Supported: DIGITAL_ASSET, FLATTRADE'
             }), 400
         
         # Return result
@@ -278,6 +278,6 @@ def health():
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     print(f"\n[INIT] Flask app starting on port {port}")
-    print(f"[INIT] Binance Testnet Mode: {BINANCE_TESTNET}")
+    print(f"[INIT] DigitalAsset Testnet Mode: {BINANCE_TESTNET}")
     print(f"[INIT] Flattrade API Configured: {bool(FLATTRADE_API_KEY)}")
     app.run(host='0.0.0.0', port=port, debug=False)

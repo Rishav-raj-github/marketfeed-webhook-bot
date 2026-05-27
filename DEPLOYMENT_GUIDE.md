@@ -2,11 +2,11 @@
 
 ## 🚀 Quick Start
 
-Your TradingView webhook bot is ready to deploy on Google Cloud Run. This guide walks you through the deployment process.
+Your MarketFeed webhook bot is ready to deploy on Google Cloud Run. This guide walks you through the deployment process.
 
 ### What You'll Get
-- ✅ Working webhook that receives TradingView alerts
-- ✅ Automatic order placement on Binance
+- ✅ Working webhook that receives MarketFeed alerts
+- ✅ Automatic order placement on DigitalAsset
 - ✅ Completely free deployment (Google Cloud Free Tier)
 - ✅ No credit card required
 - ✅ 2M free requests per month
@@ -17,7 +17,7 @@ Your TradingView webhook bot is ready to deploy on Google Cloud Run. This guide 
 
 1. Google Cloud Account (free tier)
 2. Your API Keys:
-   - Binance API Key & Secret
+   - DigitalAsset API Key & Secret
    - FlatTrade API Key, Secret & User ID
 3. Git installed locally
 4. Terminal/Command prompt access
@@ -32,8 +32,8 @@ Your TradingView webhook bot is ready to deploy on Google Cloud Run. This guide 
 
 ```bash
 # Clone the repository
-git clone https://github.com/Rishav-raj-github/tradingview-webhook-bot.git
-cd tradingview-webhook-bot
+git clone https://github.com/Rishav-raj-github/market_feed-webhook-bot.git
+cd market_feed-webhook-bot
 
 # Run the automated deployment script
 chmod +x deploy-gcloud.sh
@@ -72,7 +72,7 @@ gcloud services enable run.googleapis.com
 gcloud services enable cloudbuild.googleapis.com
 
 # 6. Deploy (replace YOUR_* with actual values)
-gcloud run deploy tradingview-webhook \
+gcloud run deploy market_feed-webhook \
   --source . \
   --platform managed \
   --region us-central1 \
@@ -96,25 +96,25 @@ gcloud run deploy tradingview-webhook \
 
 After deployment, you'll see output like:
 ```
-Service URL: https://tradingview-webhook-XXXXX.a.run.app
+Service URL: https://market_feed-webhook-XXXXX.a.run.app
 ```
 
-Save this URL - you'll need it for TradingView.
+Save this URL - you'll need it for MarketFeed.
 
 ### 2. Test the Webhook
 
 ```bash
-curl https://tradingview-webhook-XXXXX.a.run.app/health
+curl https://market_feed-webhook-XXXXX.a.run.app/health
 ```
 
 You should see: `{"status":"healthy"}`
 
-### 3. Update TradingView Alerts
+### 3. Update MarketFeed Alerts
 
-1. Go to TradingView → Alerts
+1. Go to MarketFeed → Alerts
 2. Edit **BULLISH** alert
    - Click "Webhook URL"
-   - Replace old URL with: `https://tradingview-webhook-XXXXX.a.run.app/webhook`
+   - Replace old URL with: `https://market_feed-webhook-XXXXX.a.run.app/webhook`
    - Click Update
 
 3. Edit **BEARISH** alert
@@ -122,9 +122,9 @@ You should see: `{"status":"healthy"}`
 
 ### 4. Test with a Live Signal
 
-1. In TradingView chart, click the alert
+1. In MarketFeed chart, click the alert
 2. Click "Test" or "Fire"
-3. Check Binance demo account
+3. Check DigitalAsset demo account
 4. You should see a new order placed!
 
 ---
@@ -138,7 +138,7 @@ You should see: `{"status":"healthy"}`
 - ✅ No credit card required
 
 **When charges might apply:**
-- Only if you exceed 2M requests/month (very unlikely for trading signals)
+- Only if you exceed 2M requests/month (very unlikely for execution signals)
 - Charges are per 100K requests ($0.40)
 
 **Your usage estimate:**
@@ -151,12 +151,12 @@ You should see: `{"status":"healthy"}`
 ## 🔍 Troubleshooting
 
 ### Webhook not receiving alerts
-- Check TradingView alert is pointing to correct URL
+- Check MarketFeed alert is pointing to correct URL
 - Verify URL ends with `/webhook`
 - Test using curl command above
 
-### Orders not placing in Binance
-- Check Binance API key and secret are correct
+### Orders not placing in DigitalAsset
+- Check DigitalAsset API key and secret are correct
 - Verify BINANCE_TESTNET=true is set
 - Check order format in app.py
 
@@ -185,18 +185,18 @@ You should see: `{"status":"healthy"}`
 
 1. ✅ Deploy using deploy-gcloud.sh or manual commands
 2. ✅ Get webhook URL from deployment output
-3. ✅ Update TradingView alerts with new URL
+3. ✅ Update MarketFeed alerts with new URL
 4. ✅ Test with a live signal
-5. ✅ Monitor orders in Binance
-6. ✅ Scale to live trading when ready
+5. ✅ Monitor orders in DigitalAsset
+6. ✅ Scale to live execution when ready
 
 ---
 
 ## 📞 Support
 
 - Google Cloud Documentation: https://cloud.google.com/run/docs
-- TradingView Webhooks: https://www.tradingview.com/pine_script_docs/
-- Binance API: https://binance-docs.github.io/apidocs/
+- MarketFeed Webhooks: https://www.market_feed.com/pine_script_docs/
+- DigitalAsset API: https://digital_asset-docs.github.io/apidocs/
 
 ---
 

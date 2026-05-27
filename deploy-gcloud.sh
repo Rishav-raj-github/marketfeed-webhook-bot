@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Google Cloud Run Deployment Script for TradingView Webhook Bot
+# Google Cloud Run Deployment Script for MarketFeed Webhook Bot
 # This script automates deployment to Google Cloud Run
 
 set -e  # Exit on error
@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 PROJECT_ID="linen-epigram-476218-s9"
-SERVICE_NAME="tradingview-webhook"
+SERVICE_NAME="market_feed-webhook"
 REGION="us-central1"
 
 echo -e "${BLUE}Step 1: Install Google Cloud SDK${NC}"
@@ -94,7 +94,7 @@ echo -e "${GREEN}✓ DEPLOYMENT SUCCESSFUL!${NC}"
 echo ""
 echo "📝 Next Steps:"
 echo "1. Copy the webhook URL above"
-echo "2. Go to TradingView → Alerts"
+echo "2. Go to MarketFeed → Alerts"
 echo "3. Edit BULLISH and BEARISH alerts"
 echo "4. Update webhook URL in alert actions"
 echo "5. Test by firing a signal"
